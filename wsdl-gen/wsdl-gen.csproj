@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{419A7AF5-234C-4F95-AF04-7356C6306F97}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>wsdlgen</RootNamespace>
+    <AssemblyName>wsdl-gen</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="actionengine.cs" />
+    <Compile Include="analytics.cs" />
+    <Compile Include="analyticsdevice.cs" />
+    <Compile Include="deviceio.cs" />
+    <Compile Include="devicemgmt.cs" />
+    <Compile Include="display.cs" />
+    <Compile Include="event.cs" />
+    <Compile Include="imaging.cs" />
+    <Compile Include="media.cs" />
+    <Compile Include="ptz.cs" />
+    <Compile Include="receiver.cs" />
+    <Compile Include="recording.cs" />
+    <Compile Include="remotediscovery.cs" />
+    <Compile Include="replay.cs" />
+    <Compile Include="search.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+</Project>
