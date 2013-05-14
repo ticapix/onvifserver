@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 namespace MyCalculatorService
 {
 	[ServiceContract()]
-		public interface ISimpleCalculator
+	public interface ISimpleCalculator
 	{
 		[OperationContract()]
-			int Add (int num1, int num2);
+		int Add (int num1, int num2);
 	}
 }
+
 namespace MyCalculatorService
 {
 	class SimpleCalculator : ISimpleCalculator
@@ -23,22 +24,15 @@ namespace MyCalculatorService
 		{
 			return num1 + num2;
 		}
-	}
-}
-namespace MyCalculatorServiceHost
-{
-	class Program
-	{
+
+		public static Uri serviceUri = new Uri ("http://localhost:8090/MyService/");
+
 		public static ServiceHost createServiceHost ()
 		{
-			//Create a URI to serve as the base address
-			Uri httpUrl = new Uri ("http://localhost:8090/MyService/SimpleCalculator");
 			//Create ServiceHost
-			ServiceHost host 
-					= new ServiceHost (typeof(MyCalculatorService.SimpleCalculator), httpUrl);
+			ServiceHost host = new ServiceHost (typeof(MyCalculatorService.SimpleCalculator), serviceUri);
 			//Add a service endpoint
-			host.AddServiceEndpoint (typeof(MyCalculatorService.ISimpleCalculator)
-				                        , new WSHttpBinding (), "");
+			host.AddServiceEndpoint (typeof(MyCalculatorService.ISimpleCalculator), new WSHttpBinding (), "SimpleCalculator");
 			//Enable metadata exchange
 			ServiceMetadataBehavior smb = new ServiceMetadataBehavior ();
 			smb.HttpGetEnabled = true;
@@ -49,15 +43,16 @@ namespace MyCalculatorServiceHost
 		}
 	}
 }
+
 namespace MyCalculatorServiceProxy
 {
 	public class MyCalculatorServiceProxy : 
 			//WCF create proxy for ISimpleCalculator using ClientBase
 			ClientBase<MyCalculatorService.ISimpleCalculator>, MyCalculatorService.ISimpleCalculator
 	{
-		public MyCalculatorServiceProxy (Uri serviceUri)
+		public MyCalculatorServiceProxy(Binding binding, EndpointAddress remoteAddress) : 
+			base(binding, remoteAddress)
 		{
-			base.Endpoint.Address = new EndpointAddress (serviceUri);
 		}
 
 		public int Add (int num1, int num2)
@@ -67,33 +62,20 @@ namespace MyCalculatorServiceProxy
 		}
 	}
 }
-//
-//<endpoint address ="http://localhost:8090/MyService/SimpleCalculator" 
-//	binding ="wsHttpBinding"
-//		contract ="MyCalculatorService.ISimpleCalculator">
-//
-//		</endpoint>
-namespace MyCalculatorServiceClient
+
+namespace playgound
 {
 	class Program
 	{
-		private static Uri serviceUri = new Uri ("http://localhost:8090/MyService/SimpleCalculator");
-
-		public static MyCalculatorService.ISimpleCalculator createClient ()
-		{
-			MyCalculatorServiceProxy.MyCalculatorServiceProxy proxy;
-			proxy = new MyCalculatorServiceProxy.MyCalculatorServiceProxy (serviceUri);
-			return proxy;
-		}
-
 		static void Main (string[] args)
 		{
-			var service = MyCalculatorServiceHost.Program.createServiceHost ();
-			Console.WriteLine ("Service is host at " + DateTime.Now.ToString());
+			ServiceHost service = MyCalculatorService.SimpleCalculator.createServiceHost ();
 
 			Task.Factory.StartNew (() => {
-				var client = MyCalculatorServiceClient.Program.createClient ();
-				Console.WriteLine ("Client is running at " + DateTime.Now.ToString());
+				Uri serviceUri = new Uri(MyCalculatorService.SimpleCalculator.serviceUri, "SimpleCalculator");
+				Binding binding = new WSHttpBinding();
+				EndpointAddress address = new EndpointAddress(serviceUri);
+				MyCalculatorService.ISimpleCalculator client = new MyCalculatorServiceProxy.MyCalculatorServiceProxy (binding, address);
 				Console.WriteLine ("Sum of two numbers... 5+5 =" + client.Add(5,5));
 			}).Wait ();
 			service.Close ();
