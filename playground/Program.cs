@@ -71,13 +71,13 @@ namespace playgound
 		{
 			ServiceHost service = MyCalculatorService.SimpleCalculator.createServiceHost ();
 
-			Task.Factory.StartNew (() => {
+            //Task.Factory.StartNew (() => {
 				Uri serviceUri = new Uri(MyCalculatorService.SimpleCalculator.serviceUri, "SimpleCalculator");
 				Binding binding = new WSHttpBinding();
 				EndpointAddress address = new EndpointAddress(serviceUri);
 				MyCalculatorService.ISimpleCalculator client = new MyCalculatorServiceProxy.MyCalculatorServiceProxy (binding, address);
 				Console.WriteLine ("Sum of two numbers... 5+5 =" + client.Add(5,5));
-			}).Wait ();
+            //}).Wait ();
 			service.Close ();
 		}
 	}
